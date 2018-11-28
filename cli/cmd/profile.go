@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"strings"
 	"text/template"
 
 	"github.com/linkerd/linkerd2/cli/profile"
@@ -53,7 +54,9 @@ func newCmdProfile() *cobra.Command {
 			if !options.template {
 				return errors.New("only template mode is currently supported, please run with --template")
 			}
-
+			if strings.Contains(args[0], "/") {
+				return errors.New("invalid character / is included in service")
+			}
 			return renderProfileTemplate(buildConfig(options.namespace, args[0]), os.Stdout)
 		},
 	}
